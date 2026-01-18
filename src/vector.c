@@ -92,8 +92,10 @@ int vector_append(vector_t *const vec, const void *const elem)
     return 0;
 }
 
+// Deprecated: vector get uses errno now
 void* vector_get_detail(vector_t *const vec, size_t index)
 {
+    // FIX: Should not use this type of casting
     if (!vec) return (void*)-EINVAL;
 
     if (index >= vec->size) return (void*)-EINVAL;
@@ -103,9 +105,15 @@ void* vector_get_detail(vector_t *const vec, size_t index)
 
 void* vector_get(vector_t *const vec, size_t index)
 {
-    if (!vec) return NULL;
+    if (!vec) {
+        errno = -EINVAL;
+        return NULL;
+    }
 
-    if (index >= vec->size) return NULL;
+    if (index >= vec->size) {
+        errno = -EINVAL;
+        return NULL;
+    }
 
     return (char*)vec->data + (vec->datatype_bytes * index);
 }

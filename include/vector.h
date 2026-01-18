@@ -23,6 +23,7 @@ void vector_free(vector_t *const vec);
 
 int vector_append(vector_t *const vec, const void *const elem);
 
+// *Deprecated*: use vector get instead
 void* vector_get_detail(vector_t *const vec, size_t index);
 void* vector_get(vector_t *const vec, size_t index);
 int vector_resize(vector_t *const vec, size_t new_size);
