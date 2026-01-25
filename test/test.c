@@ -19,7 +19,7 @@ int main(void) {
     // Append some integers
     for (int64_t i = 0; i < 8; i++) {
         status = vector_append(&vec, &i);
-        if (status != 0) {
+        if (status < 0) {
             fprintf(stderr, "vector_append failed at %ld: %d\n", i, status);
             goto exit;
         }
@@ -36,7 +36,7 @@ int main(void) {
 
     for (int64_t i = 8; i < 13; i++) {
         status = vector_append(&vec, &i);
-        if (status != 0) {
+        if (status < 0) {
             fprintf(stderr, "vector_append failed at %ld: %d\n", i, status);
             goto exit;
         }

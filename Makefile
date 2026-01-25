@@ -1,7 +1,11 @@
-CC=clang
+CC = clang
 
-BUILD_FLAGS=-O3 -Wall
-LINK_FLAGS=-Iinclude -Llib -lvector
+BUILD_FLAGS = -Wall -O2
+
+# Consider building with compiler vectorization (SSE, AVX, etc)
+# BUILD_FLAGS = -Wall -O2 -march=native
+
+LINK_FLAGS = -Iinclude -Llib -lvector
 
 .PHONY: all lib test clean
 

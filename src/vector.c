@@ -4,33 +4,6 @@
 
 #include <vector.h>
 
-int vector_create(vector_t **vec, size_t datatype_bytes, size_t init_size)
-{
-    if (init_size <= 0)
-        init_size = 1;
-
-    *vec = (vector_t*)malloc(sizeof(**vec));
-    if (!*vec) return -ENOMEM;
-
-    (*vec)->data = malloc(datatype_bytes * init_size);
-    if (!(*vec)->data) {
-        free(*vec);
-        return -ENOMEM;
-    }
-
-    (*vec)->size = 0;
-    (*vec)->max_size = init_size;
-    (*vec)->datatype_bytes = datatype_bytes;
-
-    return 0;
-}
-
-void vector_destroy(vector_t *vec)
-{
-    free(vec->data);
-    free(vec);
-}
-
 int vector_init(vector_t *const vec, size_t datatype_bytes, size_t init_size)
 {
     if (init_size <= 0)
@@ -81,29 +54,18 @@ int vector_append(vector_t *const vec, const void *const elem)
 
     if (vec->size + 1 > vec->max_size) {
         new_size = _vector_resize(vec, 0, VECTOR_GROW_FACTOR);
-        if (new_size <= 0) return new_size;
+        if (new_size < 0) return new_size;
         vec->max_size = new_size;
     }
 
-    void* location = (char*)vec->data + (vec->size * vec->datatype_bytes);
+    void *location = (char *)vec->data + (vec->size * vec->datatype_bytes);
     memcpy(location, elem, vec->datatype_bytes);
-    vec->size ++;
+    vec->size++;
 
-    return 0;
+    return vec->size;
 }
 
-// Deprecated: vector get uses errno now
-void* vector_get_detail(vector_t *const vec, size_t index)
-{
-    // FIX: Should not use this type of casting
-    if (!vec) return (void*)-EINVAL;
-
-    if (index >= vec->size) return (void*)-EINVAL;
-
-    return (char*)vec->data + (vec->datatype_bytes * index);
-}
-
-void* vector_get(vector_t *const vec, size_t index)
+void *vector_get(vector_t *const vec, size_t index)
 {
     if (!vec) {
         errno = -EINVAL;
@@ -115,7 +77,7 @@ void* vector_get(vector_t *const vec, size_t index)
         return NULL;
     }
 
-    return (char*)vec->data + (vec->datatype_bytes * index);
+    return (char *)vec->data + (vec->datatype_bytes * index);
 }
 
 int vector_resize(vector_t *const vec, size_t new_size)
