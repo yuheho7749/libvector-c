@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector.h>
+#include <errno.h>
 
 int main(void) {
     vector_t vec;
@@ -20,6 +21,7 @@ int main(void) {
     for (int64_t i = 0; i < 8; i++) {
         status = vector_append(&vec, &i);
         if (status < 0) {
+            printf("%d", errno);
             fprintf(stderr, "vector_append failed at %ld: %d\n", i, status);
             goto exit;
         }
@@ -29,7 +31,7 @@ int main(void) {
     // Retrieve and print values
     printf("Vector contents:\n");
     for (size_t i = 0; i < vec.size; i++) {
-        value = (int64_t*)vector_get(&vec, i);
+        value = (int64_t *)vector_get(&vec, i);
         printf("[%zu] = %ld\n", i, *value);
         printf("elem %p\n", value);
     }
@@ -45,7 +47,7 @@ int main(void) {
 
     printf("Vector contents:\n");
     for (size_t i = 0; i < vec.size; i++) {
-        value = (int64_t*)vector_get(&vec, i);
+        value = (int64_t *)vector_get(&vec, i);
         printf("[%zu] = %ld\n", i, *value);
         printf("elem %p\n", &value);
     }
