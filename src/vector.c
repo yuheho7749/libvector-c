@@ -10,7 +10,10 @@ int vector_init(vector_t *const vec, size_t datatype_bytes, size_t init_size)
         init_size = 1;
 
     vec->data = malloc(datatype_bytes * init_size);
-    if (!vec->data) return -ENOMEM;
+    if (!vec->data) {
+        errno = ENOMEM;
+        return -1;
+    }
 
     vec->size = 0;
     vec->max_size = init_size;
@@ -26,16 +29,25 @@ void vector_free(vector_t *const vec)
 
 static int _vector_resize(vector_t *const vec, size_t new_size, float grow_factor)
 {
-    if (!vec) return -EINVAL;
+    if (!vec) {
+        errno = EINVAL;
+        return -1;
+    }
 
     if (grow_factor != 0) {
         new_size = (size_t) (vec->max_size * grow_factor + 1);
     }
 
-    if (new_size <= vec->max_size) return -ECANCELED;
+    if (new_size <= vec->max_size) {
+        errno = ECANCELED;
+        return -1;
+    }
 
-    void* new_data = malloc(vec->datatype_bytes * new_size);
-    if (!new_data) return -ENOMEM;
+    void *new_data = malloc(vec->datatype_bytes * new_size);
+    if (!new_data) {
+        errno = ENOMEM;
+        return -1;
+    }
 
     memcpy(new_data, vec->data, vec->size * vec->datatype_bytes);
     free(vec->data);
@@ -46,11 +58,20 @@ static int _vector_resize(vector_t *const vec, size_t new_size, float grow_facto
 int vector_append(vector_t *const vec, const void *const elem)
 {
     int new_size;
-    if (!vec) return -EINVAL;
+    if (!vec) {
+        errno = EINVAL;
+        return -1;
+    }
 
-    if (!elem) return -EINVAL;
+    if (!elem) {
+        errno = EINVAL;
+        return -1;
+    }
 
-    if (vec->size > vec->max_size) return -ENOTRECOVERABLE;
+    if (vec->size > vec->max_size) {
+        errno = ENOTRECOVERABLE;
+        return -1;
+    }
 
     if (vec->size + 1 > vec->max_size) {
         new_size = _vector_resize(vec, 0, VECTOR_GROW_FACTOR);
@@ -68,12 +89,12 @@ int vector_append(vector_t *const vec, const void *const elem)
 void *vector_get(vector_t *const vec, size_t index)
 {
     if (!vec) {
-        errno = -EINVAL;
+        errno = EINVAL;
         return NULL;
     }
 
     if (index >= vec->size) {
-        errno = -EINVAL;
+        errno = EINVAL;
         return NULL;
     }
 

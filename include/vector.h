@@ -4,14 +4,18 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "compiler.h"
+#if defined(__clang__)
+#elif defined(__GNUC__)
+#else
+#error "Unsupported compiler"
+#endif
 
 #define VECTOR_GROW_FACTOR 1.5f
 
 typedef struct {
     size_t size;
     size_t max_size;
-    size_t datatype_bytes;
+    size_t datatype_bytes; // TODO: Make better type system
     void* data;
 } vector_t;
 
