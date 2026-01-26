@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "compiler.h"
+
 #define VECTOR_GROW_FACTOR 1.5f
 
 typedef struct {
@@ -21,5 +23,8 @@ int vector_append(vector_t *const vec, const void *const elem);
 
 void *vector_get(vector_t *const vec, size_t index);
 int vector_resize(vector_t *const vec, size_t new_size);
+
+// TODO:
+int vector_sum(vector_t *const vec, void *result);
 
 #endif // VECTOR_H

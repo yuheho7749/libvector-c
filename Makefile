@@ -1,9 +1,9 @@
 CC = clang
 
-BUILD_FLAGS = -Wall -O2
+# BUILD_FLAGS = -Wall -O2
 
-# TODO: Consider building with SIMD vectorization (SSE, AVX, etc)
-# BUILD_FLAGS = -Wall -O2 -march=native
+# Consider building with SIMD vectorization (SSE, AVX, etc)
+BUILD_FLAGS = -Wall -O2 -mavx
 
 LINK_FLAGS = -Iinclude -Llib -lvector
 

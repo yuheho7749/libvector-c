@@ -84,3 +84,9 @@ int vector_resize(vector_t *const vec, size_t new_size)
 {
     return _vector_resize(vec, new_size, 0);
 }
+
+__attribute__((target_clones("default", "sse", "avx")))
+int vector_sum(vector_t *const vec, void *result)
+{
+    return -42; // TODO: stub
+}
