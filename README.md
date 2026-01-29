@@ -1,8 +1,17 @@
-# C Vectorized Vector Lib
-*NOTE: This is not even close to being finished*
+# Vectorized Vector Library (for C)
+*STATUS: Basic implementation NOT done yet!*
 
-Vector implementation (without type unions, etc) guarantees that elems are tightly packed. Also, if you know what you are doing, then you can also manipulate multiple elements (aka raw bulk accesses)
+Vectorized (soon) vector library (aka vectorized dynamic array library) that exposes "low-level" data types (raw bytes) while not being too hard to use.
 
-## TODO?
-- [x] ~~Better tag/better type system in vector struct (that does not compromise packed elems)~~ Current design is good enough (especially for low-level SIMD)
-- [ ] Vectorized vector lib (aka SIMD vectorization with SSE, AVX2/512)
+## Starter Description
+This library has two header files `vector.h` and `xvector.h`.
+- `vector.h`: basic vector (dynamic array) functions.
+- `xvector.h`: eXtended vector operations (planned, but not implemented yet), in addition to basic `vector.h` functions.
+
+## Timeline
+- [ ] Finish basic `vector.h` functions (`vector_delete`)
+- [ ] Test performance and optimize
+    - Auto-vectorization from different compilers (optimize manually if needed)
+
+### Vectorization (PLANNED)
+- [ ] Hand-tuned SIMD vectorization with SSE, AVX2/512
