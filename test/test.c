@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <vector.h>
 #include <errno.h>
+
+#include <xvector.h>
+// #include <vector.h>
 
 int main(void) {
     vector_t vec;
@@ -19,7 +21,7 @@ int main(void) {
 
     // Append some integers
     for (int64_t i = 0; i < 8; i++) {
-        status = vector_append(&vec, &i);
+        status = vector_prepend(&vec, &i);
         if (status < 0) {
             printf("%d", errno);
             fprintf(stderr, "vector_append failed at %ld: %d\n", i, status);

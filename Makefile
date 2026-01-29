@@ -4,7 +4,7 @@ CC = gcc
 BUILD_FLAGS = -Wall -O2
 
 # Consider building with SIMD vectorization (SSE, AVX, etc)
-# BUILD_FLAGS = -Wall -O2 -mavx
+# BUILD_FLAGS = -Wall -O2 -mavx2
 
 LINK_FLAGS = -Iinclude -Llib -lvector
 
