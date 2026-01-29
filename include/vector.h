@@ -8,11 +8,17 @@
 #if defined(__clang__)
 #define CLANG_COMPILER
 #define no_optimize __attribute__((optnone))
+#define optimize_O1
+#define optimize_O2
+#define optimize_O3
 
 // --- GNUC (assumes gcc flags/attributes as "standard") ---
 #elif defined(__GNUC__)
 #define GNUC_COMPILER
 #define no_optimize __attribute__((optimize("O0")))
+#define optimize_O1 __attribute__((optimize("O1")))
+#define optimize_O2 __attribute__((optimize("O2")))
+#define optimize_O3 __attribute__((optimize("O3")))
 
 // --- Other compilers ---
 #else
@@ -35,13 +41,13 @@ typedef struct {
 int vector_init(vector_t *vec, size_t datatype_bytes, size_t init_capacity);
 void vector_free(vector_t *vec);
 int vector_recast_datatype(vector_t *vec, size_t new_datatype_bytes);
+int vector_resize(vector_t *vec, size_t new_size);
 
 int vector_append(vector_t *vec, const void *elem);
 int vector_prepend(vector_t *vec, const void *elem);
-int vector_insert(vector_t *vec, const void *elem, size_t index); // TODO:
+int vector_insert(vector_t *vec, const void *elem, size_t index);
 int vector_remove(vector_t *vec, size_t index); // TODO:
 
 void *vector_get(const vector_t *vec, size_t index);
-int vector_resize(vector_t *vec, size_t new_size);
 
 #endif // VECTOR_H

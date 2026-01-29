@@ -2,9 +2,11 @@ CC = gcc
 # CC = clang
 
 BUILD_FLAGS = -Wall -O2
+# BUILD_FLAGS = -Wall -O2 -DXVECTOR_LIB
 
 # Consider building with SIMD vectorization (SSE, AVX, etc)
 # BUILD_FLAGS = -Wall -O2 -mavx2
+# BUILD_FLAGS = -Wall -O2 -mavx2 -DXVECTOR_LIB
 
 LINK_FLAGS = -Iinclude -Llib -lvector
 
@@ -12,12 +14,12 @@ LINK_FLAGS = -Iinclude -Llib -lvector
 
 all: lib
 
+test: lib
+	$(CC) test/test.c $(LINK_FLAGS) -o test/test
+
 lib:
 	$(CC) $(BUILD_FLAGS) -c src/vector.c -Iinclude -o build/vector.o
 	ar rcs lib/libvector.a build/vector.o
-
-test:
-	$(CC) test/test.c $(LINK_FLAGS) -o test/test
 
 clean:
 	rm -f build/*.o test/test lib/libvector.a

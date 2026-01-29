@@ -4,6 +4,10 @@
 
 #include <vector.h>
 
+//
+// Standard vector operations
+//
+
 int vector_init(vector_t *vec, size_t datatype_bytes, size_t init_capacity)
 {
     if (init_capacity <= 0)
@@ -64,9 +68,14 @@ static int _vector_resize(vector_t *vec, size_t new_capacity, float grow_factor)
     return 0;
 }
 
+int vector_resize(vector_t *vec, size_t new_size)
+{
+    return _vector_resize(vec, new_size, 0);
+}
+
 int vector_append(vector_t *vec, const void *elem)
 {
-    int new_size;
+    size_t new_size;
     void *location;
     int retval = 0;
 
@@ -90,10 +99,16 @@ int vector_append(vector_t *vec, const void *elem)
 
 int vector_prepend(vector_t *vec, const void *elem)
 {
+    return vector_insert(vec, elem, 0);
+}
+
+int vector_insert(vector_t *vec, const void *elem, size_t index)
+{
     size_t new_capacity;
     void *new_data;
-    void *location;
-    int i;
+    char *dest;
+    char *src;
+    size_t i;
 
     // Might remove safety check for slightly faster implementation?
     if (vec->size > vec->capacity) {
@@ -109,23 +124,34 @@ int vector_prepend(vector_t *vec, const void *elem)
             errno = ENOMEM;
             return -1;
         }
-        location = ((char *)new_data) + vec->datatype_bytes;
-        memcpy(location, vec->data,
-               vec->size * vec->datatype_bytes);
+
+        memcpy(new_data, vec->data, vec->datatype_bytes * index);
+
+        dest = (char *)new_data + (vec->datatype_bytes * index);
+        memcpy(dest, elem, vec->datatype_bytes);
+
+        dest = (char *)dest + vec->datatype_bytes;
+        src = (char *)vec->data + (vec->datatype_bytes * index);
+        memcpy(dest, src, (vec->size - index) * vec->datatype_bytes);
+
         free(vec->data);
         vec->capacity = new_capacity;
         vec->data = new_data;
-        memcpy(vec->data, elem, vec->datatype_bytes);
         vec->size++;
         return 1;
     }
 
-    // TEMP: Use dumb loop for each char to make space at the beginning.
-    // Will use vectorized implementation if performance is unsatisfactory.
-    for (i = vec->size * vec->datatype_bytes - 1; i >= 0; i--) {
-        ((char *)vec->data)[i + vec->datatype_bytes] = ((char *)vec->data)[i];
+    if (vec->size > 0) {
+        i = vec->size * vec->datatype_bytes - 1;
+        while ((size_t)i >= (vec->datatype_bytes * index)) {
+            ((char *)vec->data)[i + vec->datatype_bytes] = ((char *)vec->data)[i];
+            if (i == 0)
+                break;
+            i--;
+        }
     }
-    memcpy(vec->data, elem, vec->datatype_bytes);
+    dest = (char *)vec->data + (vec->datatype_bytes * index);
+    memcpy(dest, elem, vec->datatype_bytes);
     vec->size++;
 
     return 0;
@@ -141,14 +167,14 @@ void *vector_get(const vector_t *vec, size_t index)
     return (char *)vec->data + (vec->datatype_bytes * index);
 }
 
-int vector_resize(vector_t *vec, size_t new_size)
-{
-    return _vector_resize(vec, new_size, 0);
-}
-
+//
+// Xtended vector operations
+//
+#ifdef XVECTOR_LIB
 // NOTE: sum is probably easy enough for the compiler to auto-vectorize
 __attribute__((target_clones("default", "sse", "avx")))
 int vector_sum_int32(const vector_t *vec, void *result)
 {
     return -42;
 }
+#endif // XVECTOR_LIB
