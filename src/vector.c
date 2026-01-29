@@ -143,7 +143,7 @@ int vector_insert(vector_t *vec, const void *elem, size_t index)
 
     if (vec->size > 0) {
         i = vec->size * vec->datatype_bytes - 1;
-        while ((size_t)i >= (vec->datatype_bytes * index)) {
+        while (i >= (vec->datatype_bytes * index)) {
             ((char *)vec->data)[i + vec->datatype_bytes] = ((char *)vec->data)[i];
             if (i == 0)
                 break;
@@ -159,12 +159,41 @@ int vector_insert(vector_t *vec, const void *elem, size_t index)
 
 void *vector_get(const vector_t *vec, size_t index)
 {
-    if (index >= vec->size) {
+    if (index < 0 || index >= vec->size) {
         errno = EINVAL;
         return NULL;
     }
 
     return (char *)vec->data + (vec->datatype_bytes * index);
+}
+
+int vector_remove(vector_t *vec, size_t index)
+{
+    size_t i;
+
+    if (vec->size > vec->capacity) {
+        errno = ENOTRECOVERABLE;
+        return -1;
+    }
+
+    if (index < 0 || index >= vec->size) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    if (vec->size == 0) {
+        errno = ECANCELED;
+        return -1;
+    }
+
+    i = vec->datatype_bytes * index;
+    while (i < vec->datatype_bytes * (vec->size - 1)) {
+        ((char *)vec->data)[i] = ((char *)vec->data)[i + vec->datatype_bytes];
+        i++;
+    }
+    vec->size--;
+
+    return 0;
 }
 
 //

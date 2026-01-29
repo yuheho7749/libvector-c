@@ -46,7 +46,7 @@ int vector_resize(vector_t *vec, size_t new_size);
 int vector_append(vector_t *vec, const void *elem);
 int vector_prepend(vector_t *vec, const void *elem);
 int vector_insert(vector_t *vec, const void *elem, size_t index);
-int vector_remove(vector_t *vec, size_t index); // TODO:
+int vector_remove(vector_t *vec, size_t index);
 
 void *vector_get(const vector_t *vec, size_t index);
 
