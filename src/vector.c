@@ -16,7 +16,7 @@
 // Compile options
 //
 
-#if defined(__GNUC__)
+#if defined(GNUC_COMPILER)
 #define no_optimize __attribute__((optimize("O0")))
 #define optimize_O1 __attribute__((optimize("O1")))
 #define optimize_O2 __attribute__((optimize("O2")))
