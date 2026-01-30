@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: LGPL-2.1-only
+
+/*
+ * Vector (dynamic array) library
+ *
+ * Copyright (c) 2026 yuheho7749
+ */
+
 #ifndef VECTOR_H
 #define VECTOR_H
 
