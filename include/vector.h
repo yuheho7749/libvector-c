@@ -7,18 +7,10 @@
 // --- CLANG ---
 #if defined(__clang__)
 #define CLANG_COMPILER
-#define no_optimize __attribute__((optnone))
-#define optimize_O1
-#define optimize_O2
-#define optimize_O3
 
 // --- GNUC (assumes gcc flags/attributes as "standard") ---
 #elif defined(__GNUC__)
 #define GNUC_COMPILER
-#define no_optimize __attribute__((optimize("O0")))
-#define optimize_O1 __attribute__((optimize("O1")))
-#define optimize_O2 __attribute__((optimize("O2")))
-#define optimize_O3 __attribute__((optimize("O3")))
 
 // --- Other compilers ---
 #else

@@ -1,10 +1,17 @@
+VERSION = 1
+SUBVERSION = 0
+EXTRA = rc1
+
 CC = gcc
 # CC = clang
 
 BUILD_FLAGS = -Wall -O2
 # BUILD_FLAGS = -Wall -O2 -DXVECTOR_LIB
 
-# Consider building with SIMD vectorization (SSE, AVX, etc)
+# Build with no "guardrails" (not recommended)
+# BUILD_FLAGS = -Wall -O2 -DHOT_GUARDRAILS_OFF -DCOLD_GUARDRAILS_OFF
+
+# xvector (not ready yet): Consider building with SIMD vectorization (SSE, AVX, etc)
 # BUILD_FLAGS = -Wall -O2 -mavx2
 # BUILD_FLAGS = -Wall -O2 -mavx2 -DXVECTOR_LIB
 
