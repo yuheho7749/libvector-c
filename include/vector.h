@@ -28,7 +28,7 @@
 
 #ifndef VECTOR_GROW_FACTOR
 #define VECTOR_GROW_FACTOR 1.5f
-#endif // Compiler check end
+#endif
 
 typedef struct {
     size_t size;
