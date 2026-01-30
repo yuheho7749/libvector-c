@@ -1,7 +1,8 @@
 # Vectorized Vector Library (for C)
-*STATUS: Basic implementation NOT done yet!*
 
-Vectorized (soon) vector library (aka vectorized dynamic array library) that exposes "low-level" data types (raw bytes) while not being too hard to use.
+Vectorized vector library (aka vectorized dynamic array library) that exposes "low-level" data types (raw bytes) while not being too hard to use.
+
+*NOTE: eXetended vector operation not implemented yet*
 
 ## Starter Description
 This library has two header files `vector.h` and `xvector.h`.
