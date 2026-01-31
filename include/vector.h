@@ -30,15 +30,21 @@
 #define VECTOR_GROW_FACTOR 1.5f
 #endif
 
+// "Theoretical" minor struct layout optimization: data + size fields
+// together for max cache locality/same cache line
+// Also, data pointer as the 1st field "theoretically" increases the chance
+// it's in a register already if the struct is manipulated recently
 typedef struct {
+    void *data;
     size_t size;
     size_t capacity;
     size_t datatype_bytes; // Low-level type system by design
-    void* data;
+    size_t alignment;
 } vector_t;
 
 // User handles alloc/free of the vector struct (but not the data field)
-int vector_init(vector_t *vec, size_t datatype_bytes, size_t init_capacity);
+int vector_init(vector_t *vec, size_t datatype_bytes,
+                size_t init_capacity, size_t alignment);
 void vector_free(vector_t *vec);
 int vector_recast_datatype(vector_t *vec, size_t new_datatype_bytes);
 int vector_resize(vector_t *vec, size_t new_size);

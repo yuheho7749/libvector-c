@@ -13,11 +13,12 @@ int main(void) {
     printf("=== c vector test ===\n");
 
     // Initialize vector for int64_t
-    status = vector_init(&vec, sizeof(int64_t), 5);
+    status = vector_init(&vec, sizeof(int64_t), 5, 0);
     if (status != 0) {
         printf("vector_init failed: %d\n", status);
         return status;
     }
+    printf("vector alignment: %ld\n", vec.alignment);
 
     // Append some integers
     for (int64_t i = 0; i < 8; i++) {

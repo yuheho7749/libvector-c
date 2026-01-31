@@ -13,6 +13,7 @@ BUILD_FLAGS = -Wall -O2
 
 # xvector (not ready yet): Consider building with SIMD vectorization (SSE, AVX, etc)
 # BUILD_FLAGS = -Wall -O2 -mavx2
+# BUILD_FLAGS = -Wall -O2 -march=native
 # BUILD_FLAGS = -Wall -O2 -mavx2 -DXVECTOR_LIB
 
 LINK_FLAGS = -Iinclude -Llib -lvector

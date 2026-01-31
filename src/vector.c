@@ -32,6 +32,18 @@
 #error "Unsupported compiler"
 #endif
 
+// Cache line alignment for AVX instructions
+// Recommended SSE: 16, AVX2: 32, AVX512: 64
+#ifndef DEFAULT_ALIGNMENT
+#if defined(__AVX512F__)
+#define DEFAULT_ALIGNMENT 64
+#elif defined(__AVX__) || defined(__AVX2__)
+#define DEFAULT_ALIGNMENT 32
+#else
+#define DEFAULT_ALIGNMENT 16
+#endif
+#endif
+
 // Safety checks on "hot" functions (most important for append, get).
 // Also turns off in prepend, insert, remove too.
 #ifndef HOT_GUARDRAILS_OFF
@@ -44,17 +56,20 @@
 #define COLD_GUARDRAIL
 #endif
 
-
 //
 // Standard vector operations
 //
 
-int vector_init(vector_t *vec, size_t datatype_bytes, size_t init_capacity)
+int vector_init(vector_t *vec, size_t datatype_bytes,
+                size_t init_capacity, size_t alignment)
 {
     if (init_capacity <= 0)
         init_capacity = 1;
 
-    vec->data = malloc(datatype_bytes * init_capacity);
+    if (alignment == 0)
+        alignment = DEFAULT_ALIGNMENT;
+
+    vec->data = aligned_alloc(alignment, datatype_bytes * init_capacity);
     if (!vec->data) {
         errno = ENOMEM;
         return -1;
@@ -63,6 +78,7 @@ int vector_init(vector_t *vec, size_t datatype_bytes, size_t init_capacity)
     vec->size = 0;
     vec->capacity = init_capacity;
     vec->datatype_bytes = datatype_bytes;
+    vec->alignment = alignment;
 
     return 0;
 }
@@ -98,7 +114,7 @@ static int _vector_resize(vector_t *vec, size_t new_capacity, float grow_factor)
     }
 #endif
 
-    new_data = malloc(vec->datatype_bytes * new_capacity);
+    new_data = aligned_alloc(vec->alignment, vec->datatype_bytes * new_capacity);
     if (!new_data) {
         errno = ENOMEM;
         return -1;
@@ -167,7 +183,8 @@ int vector_insert(vector_t *vec, const void *elem, size_t index)
     // Increase capacity
     if (vec->size + 1 > vec->capacity) {
         new_capacity = (size_t) (vec->capacity * VECTOR_GROW_FACTOR + 1);
-        new_data = malloc(vec->datatype_bytes * new_capacity);
+        new_data = aligned_alloc(vec->alignment,
+                                 vec->datatype_bytes * new_capacity);
         if (!new_data) {
             errno = ENOMEM;
             return -1;
@@ -189,6 +206,7 @@ int vector_insert(vector_t *vec, const void *elem, size_t index)
         return 1;
     }
 
+    // Might use builtin memmove after benchmarking
     if (vec->size > 0) {
         i = vec->size * vec->datatype_bytes - 1;
         while (i >= (vec->datatype_bytes * index)) {
@@ -238,6 +256,7 @@ int vector_remove(vector_t *vec, size_t index)
     }
 #endif
 
+    // Might use builtin memmove after benchmarking
     i = vec->datatype_bytes * index;
     while (i < vec->datatype_bytes * (vec->size - 1)) {
         ((char *)vec->data)[i] = ((char *)vec->data)[i + vec->datatype_bytes];
